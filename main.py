@@ -32,7 +32,7 @@ if __name__ == "__main__":
                         choices=['Adam', 'SGD'])
     parser.add_argument("--lr",
                         type=float,
-                        default=1e-4)                    
+                        default=1e-3)                    
     parser.add_argument("--batch_size",
                         type=str,
                         default='2')
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     #check no of gpus if so
     model = Cascade_RCVPose(args)
     train_loader, val_loader = get_loader(args)
-    trainer = pl.Trainer(limit_train_batches=100, max_epochs=500,devices=noofgpus,
+    trainer = pl.Trainer(limit_train_batches=1.0, max_epochs=500,devices=noofgpus,
     accelerator=device)
     trainer.fit(model=model, train_dataloaders=train_loader,val_dataloaders=val_loader)
 

@@ -43,7 +43,7 @@ class Cascade_RCVPose(pl.LightningModule):
         loss_sl1r = self.radii_l(radii_out,radii_gt)
         loss_geo = self.geo_l(radii_out,radii_gt)
         #different weight for initial training and fine tuning
-        loss_r = 1*loss_sl1r + 0*loss_geo 
+        loss_r = 0.8*loss_sl1r + 0.2*loss_geo 
         loss = loss_s+loss_r
         self.log('train_sem', loss_s)
         self.log('train_r',loss_r)
@@ -66,10 +66,10 @@ class Cascade_RCVPose(pl.LightningModule):
         self.log('val_r', loss_r)
         self.log('val_rsl1',loss_sl1r)
         self.log('val_geo',loss_geo)
-        self.log('val', loss)
+        self.log('val_loss', loss)
         for i in range(3):
             'Val_ACC_kp'+str(i), float(torch.sum(torch.where(torch.abs(radii_out[:,:,i]-radii_gt[:,:,i])[torch.where(radii_gt[:,:,i]!=0)]*(self.globalmax-self.globalmin)<=0.5,1,0)) / float(len(torch.nonzero(radii_gt[:,:,i]))))
-        self.log('train_loss', loss)
+        #self.log('train_loss', loss)
 
     def configure_optimizers(self):
         optimizer = torch.optim.SGD(self.parameters(), lr=self.args.lr)
